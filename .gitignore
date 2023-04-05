@@ -1,2 +1,4 @@
-/data/*
-/data_emotion/*.jpg
+*.jpg
+*.png
+*.bmp
+*.xml
