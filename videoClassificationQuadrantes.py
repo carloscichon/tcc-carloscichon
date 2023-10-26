@@ -7,15 +7,14 @@ from keras.models import model_from_json
 #emotion_dict = {0: "neutral", 1: "fear", 2: "disgust", 3: "sadness", 4: "happy", 5: "anger", 6: "sad", 7: "surprise"}
 emotion_dict = {0: "angry", 1: "contempt", 2: "disgust", 3: "fear", 4: "happy", 5: "neutral", 6: "sad", 7: "surprise"}
 
-
 # load json and create model
-json_file = open('affect_model_balanced_30.json', 'r')
+json_file = open('affect_model_200.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 emotion_model = model_from_json(loaded_model_json)
 
 # load weights into new model
-emotion_model.load_weights("affect_model_balanced_30.h5")
+emotion_model.load_weights("affect_model_200.h5")
 print("Loaded model from disk")
 
 # start the webcam feed
@@ -49,7 +48,21 @@ while True:
         maxindex = int(np.argmax(emotion_prediction))
         print("Max :", maxindex)
         print(emotion_prediction)
-        cv2.putText(frame, emotion_dict[maxindex], (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+
+        emotion = emotion_dict[maxindex]
+
+        if emotion == "fear" or emotion == "angry" or emotion == "disgust":
+            quadrant = "Q2"
+        elif emotion == "sadness":
+            quadrant == "Q3"
+        elif emotion == "happy" or emotion == "surprise":
+            quadrant = "Q1"
+        elif emotion == "contempt":
+            quadrant = "Q4"
+        elif emotion == "neutral":
+            quadrant = "QN"
+
+        cv2.putText(frame, quadrant, (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
     cv2.imshow('Emotion Detection', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
